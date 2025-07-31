@@ -1,7 +1,5 @@
 from django.db import models
 
-# Improvement: Remove unused imports and comments, use consistent naming, and improve field types and relationships.
-
 class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
@@ -28,11 +26,10 @@ class Profil(models.Model):
     last_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True)
-    # Improvement: Use OneToOneField for user relation, assuming integration with custom user model
     user_id = models.CharField(max_length=255, null=True, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    type_profil = models.CharField(max_length=255,null=True,blank=True)
+    type_profil = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -47,7 +44,6 @@ class PhysicalProfil(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
-    # Improvement: Use OneToOneField for unique relation
     profil = models.OneToOneField(Profil, on_delete=models.CASCADE, related_name="physical_profile", null=True, blank=True)
 
     def __str__(self):
@@ -64,8 +60,6 @@ class ProfilMoral(models.Model):
     forme_juridique = models.CharField(max_length=255)
     secteur_activite = models.CharField(max_length=255)
     logo = models.ImageField(upload_to='logos/', null=True, blank=True)
-    
-    # Improvement: Use OneToOneField for unique relation
     profil = models.OneToOneField(Profil, on_delete=models.CASCADE, related_name="moral_profile", null=True, blank=True)
 
     def __str__(self):
@@ -83,12 +77,14 @@ class Document(models.Model):
 
     def __str__(self):
         return self.document_name
+
+
 class Service(models.Model):
-    nom = models.CharField(max_length=255)  # e.g., "Express Delivery", etc.
+    nom = models.CharField(max_length=255)
     description = models.TextField()
-    price=models.FloatField(null=True)
+    price = models.FloatField(null=True)
     partenaire = models.ForeignKey(Profil, on_delete=models.CASCADE, related_name="services")
-    is_active=models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nom
