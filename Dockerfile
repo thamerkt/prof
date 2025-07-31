@@ -5,7 +5,7 @@ FROM python:3.9-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
 # Install system dependencies
@@ -18,16 +18,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the Django project code
+# Copy project files
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 8007
+# Copy and make entrypoint script executable
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-# Command to run the application
-echo "📦 Running Django migrations..."
-python manage.py makemigrations --noinput
-python manage.py migrate --noinput
+# Run the entrypoint
+ENTRYPOINT ["/app/entrypoint.sh"]
 
-echo "🚀 Starting Django development server..."
-python manage.py runserver 0.0.0.0:8000
+# Expose port for Render
+EXPOSE 8000
