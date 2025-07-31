@@ -1,14 +1,8 @@
 #!/bin/sh
 
-# Wait for the database to be ready
-echo "⏳ Waiting for DB to be ready..."
-until python manage.py dbshell < /dev/null; do
-  echo "DB is unavailable - sleeping"
-  sleep 2
-done
-
-echo "🚀 Running migrations..."
+echo "📦 Running Django migrations..."
+python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 
-echo "📦 Starting Django server..."
+echo "🚀 Starting Django development server..."
 python manage.py runserver 0.0.0.0:8000
